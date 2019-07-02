@@ -1,27 +1,50 @@
 # MultiErrorHandler
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.6.
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { ErrorHandler, NgModule } from '@angular/core';
 
-## Development server
+import { AppComponent } from './app.component';
+import { MULTI_ERROR_HANDLERS, NgxMultiErrorHandlerModule } from 'ngx-multi-error-handler';
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+class CustomErrorHandler1 implements ErrorHandler {
+  handleError(error: any): void {
+    console.log('Handler1', error);
+  }
+}
 
-## Code scaffolding
+class CustomErrorHandler2 implements ErrorHandler {
+  handleError(error: any): void {
+    console.log('Handler2', error);
+  }
+}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    NgxMultiErrorHandlerModule.forRoot()
+  ],
+  providers: [
+    {
+      provide: MULTI_ERROR_HANDLERS,
+      useClass: CustomErrorHandler1,
+      multi: true
+    },
+    {
+      provide: MULTI_ERROR_HANDLERS,
+      useClass: CustomErrorHandler2,
+      multi: true
+    }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {
+  constructor(handler: ErrorHandler) {
+    handler.handleError(new Error('Error'));
+  }
+}
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```

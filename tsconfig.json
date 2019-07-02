@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ngx-multi-error-handler": [
+        "dist/ngx-multi-error-handler"
+      ],
+      "ngx-multi-error-handler/*": [
+        "dist/ngx-multi-error-handler/*"
+      ]
+    }
   }
 }

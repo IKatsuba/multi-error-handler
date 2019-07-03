@@ -1,24 +1,54 @@
-# NgxMultiErrorHandler
+# ngx-multi-error-handler
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.3.
+```
+$ npm i ngx-multi-error-handler
+```
 
-## Code scaffolding
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { ErrorHandler, NgModule } from '@angular/core';
 
-Run `ng generate component component-name --project ngx-multi-error-handler` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-multi-error-handler`.
-> Note: Don't forget to add `--project ngx-multi-error-handler` or else it will be added to the default project in your `angular.json` file. 
+import { AppComponent } from './app.component';
+import { MULTI_ERROR_HANDLERS, NgxMultiErrorHandlerModule } from 'ngx-multi-error-handler';
 
-## Build
+class CustomErrorHandler1 implements ErrorHandler {
+  handleError(error: any): void {
+    console.log('Handler1', error);
+  }
+}
 
-Run `ng build ngx-multi-error-handler` to build the project. The build artifacts will be stored in the `dist/` directory.
+class CustomErrorHandler2 implements ErrorHandler {
+  handleError(error: any): void {
+    console.log('Handler2', error);
+  }
+}
 
-## Publishing
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    NgxMultiErrorHandlerModule.forRoot()
+  ],
+  providers: [
+    {
+      provide: MULTI_ERROR_HANDLERS,
+      useClass: CustomErrorHandler1,
+      multi: true
+    },
+    {
+      provide: MULTI_ERROR_HANDLERS,
+      useClass: CustomErrorHandler2,
+      multi: true
+    }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {
+  constructor(handler: ErrorHandler) {
+    handler.handleError(new Error('Error'));
+  }
+}
 
-After building your library with `ng build ngx-multi-error-handler`, go to the dist folder `cd dist/ngx-multi-error-handler` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-multi-error-handler` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
